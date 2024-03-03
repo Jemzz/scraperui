@@ -27,7 +27,9 @@ function Nav() {
               key={item.name}
               href={item.href}
               className={classNames(
-                pathname === item.href ? "text-danger" : "text-success",
+                pathname === item.href
+                  ? "text-danger fw-bold text-decoration-underline"
+                  : "text-success",
                 "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               )}
               aria-current={pathname === item.href ? "page" : undefined}

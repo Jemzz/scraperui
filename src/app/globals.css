@@ -81,3 +81,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* .form-select{
+  position: relative;
+}
+
+.btn{
+  position: relative;
+} */
+
+.container{
+  position: relative !important;
+}
+
+.erkbiK div:first-child {
+  white-space: pre-wrap !important;
+}

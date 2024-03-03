@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Nav from "./nav";
 import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.css";
+
 import "./globals.css";
+import ParticleBackground from "./particlebackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ParticleBackground />
         <div className="container">
           <Nav />
           {children}
