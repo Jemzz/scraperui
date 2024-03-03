@@ -1,16 +1,22 @@
+"use client";
+
 import React from "react";
 
-function SearchHistory() {
-  interface SearchHistory {
-    Id: string;
-    searchText: number;
-    url: number;
-    rankings: string;
-    searchEngineName: string;
-    searchDate: Date;
-  }
+function SearchHistoryDetails() {
+  // interface SearchHistory {
+  //   Id: string;
+  //   searchText: number;
+  //   url: number;
+  //   rankings: string;
+  //   searchEngineName: string;
+  //   searchDate: Date;
+  // }
 
-  return <div>SearchData</div>;
+  return (
+    <div>
+      <p>hello</p>
+    </div>
+  );
 }
 
-export default SearchHistory;
+export default SearchHistoryDetails;
