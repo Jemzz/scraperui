@@ -33,7 +33,7 @@ function SearchHistoryDetails(props: HistoryProps) {
       sortable: true,
     },
     {
-      name: "SearchDate",
+      name: "Date Searched",
       selector: (row) => new Date(row.searchDate).toDateString(),
       sortable: true,
       width: "150px",
