@@ -5,7 +5,7 @@ npm -v
 then run 
 
 ```bash
-"npm i"
+npm i
 ```
 
 after install completes run 
