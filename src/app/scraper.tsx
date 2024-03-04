@@ -137,7 +137,8 @@ function Scraper() {
         pageSize: 100,
       }),
     };
-    fetch(`${Constants.BaseAddress}/rankings`, requestOptions)
+
+    await fetch(`${Constants.BaseAddress}/rankings`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

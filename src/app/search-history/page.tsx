@@ -12,7 +12,7 @@ function SearchHistory() {
   const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
-    getSearchHistory("");
+    getSearchHistory();
     getSearchEnginesData();
   }, []);
 
@@ -59,7 +59,7 @@ function SearchHistory() {
   );
 
   function filter() {
-    getSearchHistory("infotrack");
+    getSearchHistory();
   }
 
   function handleSelectedEngine(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -67,7 +67,7 @@ function SearchHistory() {
     setSelectedFilterSearchEngineId(e.target.value);
   }
 
-  async function getSearchHistory(searchText: string | undefined) {
+  async function getSearchHistory() {
     const res = await fetch(
       `${Constants.BaseAddress}/searchHistory?searchText=${filterText}&searchId=${searchEngineId}`
     );
