@@ -1,4 +1,4 @@
-Firstly make sure npm is installed then run
+Firstly make sure npm is installed
 ```bash
 npm -v
 ```
