@@ -149,10 +149,7 @@ function Scraper() {
         });
     } catch (error) {
       var errorMsg = error instanceof Error ? error.message : "Unknown error.";
-      console.log(
-        "There has been a problem with your fetch operation: ",
-        errorMsg
-      );
+      throw new Error(errorMsg);
     }
   }
 }

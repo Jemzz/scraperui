@@ -19,9 +19,9 @@ function SearchHistory() {
     )
   );
 
-  const { data: engines, error: error2 } = useFetchData<
-    BaseResponse<SearchEngines[]>
-  >(() => fetchDataFromApi(`${Constants.BaseAddress}/searchengines`));
+  const { data: engines } = useFetchData<BaseResponse<SearchEngines[]>>(() =>
+    fetchDataFromApi(`${Constants.BaseAddress}/searchengines`)
+  );
 
   const fetchDataFromApi = async (url: string) => {
     const response = await fetch(url);
@@ -31,7 +31,7 @@ function SearchHistory() {
     return await response.json();
   };
 
-  const handleClickFetchData2 = async () => {
+  const handleSearchHistoryFetch = async () => {
     fetchHistory(); // Trigger data fetching for API 2 on button click
   };
 
@@ -65,7 +65,10 @@ function SearchHistory() {
           />
         </Col>
         <Col xs lg="3">
-          <button className="btn btn-success" onClick={handleClickFetchData2}>
+          <button
+            className="btn btn-success"
+            onClick={handleSearchHistoryFetch}
+          >
             Filter
           </button>
         </Col>
