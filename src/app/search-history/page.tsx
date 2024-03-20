@@ -3,85 +3,83 @@ import React, { useEffect, useState } from "react";
 import SearchHistoryDetails from "./SearchHistory";
 import { Col, Row } from "react-bootstrap";
 import Constants from "../constants";
+import useFetchData from "../effects/useFetchData";
 
 function SearchHistory() {
-  const [searchHistory, setSearchHistory] =
-    useState<BaseResponse<SearchHistory[]>>();
-  const [engines, setSearchEngines] = useState<BaseResponse<SearchEngines[]>>();
   const [searchEngineId, setSelectedFilterSearchEngineId] = useState("");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    getSearchHistory();
-    getSearchEnginesData();
-  }, []);
+  const {
+    data: searchHistory,
+    error: searchHistoryError,
+    fetchData: fetchHistory,
+  } = useFetchData<BaseResponse<SearchHistory[]>>(() =>
+    fetchDataFromApi(
+      `${Constants.BaseAddress}/searchHistory?searchText=${filterText}&searchId=${searchEngineId}`
+    )
+  );
+
+  const { data: engines, error: error2 } = useFetchData<
+    BaseResponse<SearchEngines[]>
+  >(() => fetchDataFromApi(`${Constants.BaseAddress}/searchengines`));
+
+  const fetchDataFromApi = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data from ${url}`);
+    }
+    return await response.json();
+  };
+
+  const handleClickFetchData2 = async () => {
+    fetchHistory(); // Trigger data fetching for API 2 on button click
+  };
 
   return (
     <div>
-      <form action={filter}>
-        <Row className="mt-4 mb-4">
-          <Col xs lg="3">
-            <select
-              className="form-select"
-              value={searchEngineId}
-              onChange={handleSelectedEngine}
-            >
-              <option>Select Engine</option>
-              {engines !== undefined
-                ? engines.data.map((x) => (
-                    <option key={x.id} value={x.id}>
-                      {x.searchEngineName}
-                    </option>
-                  ))
-                : null}
-            </select>
-          </Col>
-          <Col xs lg="3">
-            <input
-              id="keyword"
-              className="form-control"
-              placeholder="Keyword"
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-            />
-          </Col>
-          <Col xs lg="3">
-            <button className="btn btn-success" type="submit">
-              Filter
-            </button>
-          </Col>
-        </Row>
-      </form>
+      {/* <form action={filter}> */}
+      <Row className="mt-4 mb-4">
+        <Col xs lg="3">
+          <select
+            className="form-select"
+            value={searchEngineId}
+            onChange={handleSelectedEngine}
+          >
+            <option value="">Select Engine</option>
+            {engines !== null
+              ? engines.data.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.searchEngineName}
+                  </option>
+                ))
+              : null}
+          </select>
+        </Col>
+        <Col xs lg="3">
+          <input
+            id="keyword"
+            className="form-control"
+            placeholder="Keyword"
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+        </Col>
+        <Col xs lg="3">
+          <button className="btn btn-success" onClick={handleClickFetchData2}>
+            Filter
+          </button>
+        </Col>
+      </Row>
       {searchHistory != null ? (
-        <SearchHistoryDetails history={searchHistory.data} />
+        <SearchHistoryDetails history={searchHistory!.data} />
       ) : null}
+      {searchHistoryError != null ? <p>{searchHistoryError.message}</p> : null}
     </div>
   );
-
-  function filter() {
-    getSearchHistory();
-  }
 
   function handleSelectedEngine(e: React.ChangeEvent<HTMLSelectElement>) {
     console.log(e.target.value);
     setSelectedFilterSearchEngineId(e.target.value);
-  }
-
-  async function getSearchHistory() {
-    const res = await fetch(
-      `${Constants.BaseAddress}/searchHistory?searchText=${filterText}&searchId=${searchEngineId}`
-    );
-
-    const data = await res.json();
-    console.log(data);
-    setSearchHistory(data);
-  }
-
-  async function getSearchEnginesData() {
-    const response = await fetch(`${Constants.BaseAddress}/searchengines`);
-    const data = await response.json();
-    console.log(data);
-    setSearchEngines(data);
   }
 }
 

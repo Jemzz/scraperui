@@ -4,9 +4,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Constants from "./constants";
+import useFetchData from "./effects/useFetchData";
 
 function Scraper() {
-  const [engines, setSearchEngines] = useState<BaseResponse<SearchEngines[]>>();
   const [searchEngine, setSelectedSearchEngine] = useState("Select Engine");
   const [searchEngineId, setSelectedSearchEngineId] = useState("");
   const [searchEnginetext, setSelectedSearchText] = useState("");
@@ -15,9 +15,17 @@ function Scraper() {
   const [ranking, setRankings] = useState<BaseResponse<SearchRanking>>();
   const engineRef = React.useRef("");
 
-  useEffect(() => {
-    getSearchEnginesData();
-  }, []);
+  const { data: searchEngines } = useFetchData<BaseResponse<SearchEngines[]>>(
+    () => fetchDataFromApi(`${Constants.BaseAddress}/searchengines`)
+  );
+
+  const fetchDataFromApi = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data from ${url}`);
+    }
+    return await response.json();
+  };
 
   return (
     <div className="mt-5">
@@ -30,8 +38,8 @@ function Scraper() {
             onChange={handleSelectedEngine}
           >
             <option value="">Select Engine</option>
-            {engines !== undefined
-              ? engines.data.map((x) => (
+            {searchEngines !== null
+              ? searchEngines.data.map((x) => (
                   <option key={x.id} value={x.id}>
                     {x.searchEngineName}
                   </option>
@@ -101,15 +109,8 @@ function Scraper() {
     setSelectedSearchEngineId(e.target.value);
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     return setSelectedSearchText(e.target.value);
-  }
-
-  async function getSearchEnginesData() {
-    const response = await fetch(`${Constants.BaseAddress}/searchengines`);
-    const data = await response.json();
-    console.log(data);
-    setSearchEngines(data);
   }
 
   async function processSearchData() {
@@ -128,23 +129,31 @@ function Scraper() {
       return;
     }
 
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        searchId: searchEngineId,
-        searchText: searchEnginetext,
-        pageSize: 100,
-      }),
-    };
+    try {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          searchId: searchEngineId,
+          searchText: searchEnginetext,
+          pageSize: 100,
+        }),
+      };
 
-    await fetch(`${Constants.BaseAddress}/rankings`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        engineRef.current = searchEngine;
-        setRankings(data);
-      });
+      await fetch(`${Constants.BaseAddress}/rankings`, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          engineRef.current = searchEngine;
+          setRankings(data);
+        });
+    } catch (error) {
+      var errorMsg = error instanceof Error ? error.message : "Unknown error.";
+      console.log(
+        "There has been a problem with your fetch operation: ",
+        errorMsg
+      );
+    }
   }
 }
 
