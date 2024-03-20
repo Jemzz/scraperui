@@ -15,7 +15,7 @@ npm run dev
 
 Open at [http://localhost:3000](http://localhost:3000).
 
-Application is built with React and NextJS
+Application is built with React and NextJS using Typescript
 
 ![image](https://github.com/Jemzz/scraperui/assets/12433303/c0f5b8e5-98b9-42d1-a868-1b4fb34b8b41)
 
